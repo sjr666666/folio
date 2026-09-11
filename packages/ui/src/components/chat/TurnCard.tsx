@@ -2,6 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import type { Message } from '@finagent/core';
 import { MarkdownContent } from './MarkdownContent';
+import { ToolActivity } from '../agent/ToolActivity';
 
 interface TurnCardProps {
   message: Message;
@@ -41,27 +42,8 @@ export const TurnCard: React.FC<TurnCardProps> = ({ message }) => {
             <div className="mb-2 text-[11px] font-semibold uppercase text-foreground/42">
               {t('agent.tool.calls')}
             </div>
-            <div className="space-y-1.5">
-              {toolCalls.map((toolCall) => (
-                <div
-                  key={toolCall.id}
-                  className="flex items-center justify-between gap-3 rounded-[10px] bg-foreground/[0.045] px-3 py-2 text-[12px]"
-                >
-                  <span className="truncate font-mono text-foreground/68">
-                    {toolCall.toolName}
-                  </span>
-                  <span
-                    className={
-                      toolCall.status === 'success'
-                        ? 'font-semibold text-success'
-                        : 'font-semibold text-destructive'
-                    }
-                  >
-                    {toolCall.status}
-                  </span>
-                </div>
-              ))}
-            </div>
+            {/* #33: 历史会话复用同一 ToolActivity 时间线，reload 后活动仍可查看。 */}
+            <ToolActivity toolCalls={toolCalls} />
           </div>
         )}
         <div className={`mt-2 text-[11px] ${isUser ? 'text-white/68' : 'text-foreground/38'}`}>

@@ -48,7 +48,16 @@ export const agent = {
     running: '正在处理市场数据',
     analyzedSources_one: '分析了 {{count}} 个数据源',
     analyzedSources_other: '分析了 {{count}} 个数据源',
+    // #33: Tool Activity timeline
+    activityLabel: '工具活动',
+    summaryWithIssues_one: '{{count}} 个异常工具',
+    summaryWithIssues_other: '{{count}} 个异常工具',
     statusRunning: '运行中',
+    statusCancelled: '已取消',
+    retried: '已重试',
+    resultSummary: '结果',
+    argsSummary: '参数',
+    errorSummary: '错误',
     label: '工具：{{name}}',
     calls: '工具调用',
     names: {

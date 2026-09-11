@@ -1185,7 +1185,7 @@ export class AgentKernelHost {
       args: toolCall.args,
       startedAt: toolCall.startedAt,
       completedAt: toolCall.completedAt,
-      status: toolCall.status === 'success' ? 'success' : 'error',
+      status: toolCall.status === 'error' ? 'error' : toolCall.status === 'cancelled' ? 'cancelled' : 'success',
       error: toolCall.error,
       result: toolCall.result,
     }));

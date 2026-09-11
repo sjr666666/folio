@@ -1,5 +1,5 @@
 import { atom } from 'jotai';
-import type { AgentEvent, ApiError, Message, ToolCall, WorkspaceContext } from '@finagent/core';
+import type { AgentEvent, ApiError, Message, ToolCall, ToolCallRecord, WorkspaceContext } from '@finagent/core';
 import { isRuntimeInfraCode } from '@finagent/core';
 import type { FinagentClient } from '../client';
 import { activeSessionIdAtom, messagesAtomFamily, sessionsAtom } from './sessionAtoms';
@@ -36,6 +36,31 @@ export interface LastRunSummary {
 export const lastRunSummaryAtom = atom<LastRunSummary | null>(null);
 
 export const runViewAtom = atom<RunView | null>(null);
+
+/**
+ * 把实时 ToolCall 折叠成持久化的 ToolCallRecord。运行被取消/失败时，仍在
+ * running 的工具没有 terminal 事件，必须显式折叠成 cancelled（#33：失败/
+ * 取消状态不能被隐藏成普通成功）。
+ */
+function toRecord(toolCall: ToolCall, runCancelled: boolean): ToolCallRecord {
+  const status = runCancelled && toolCall.status === 'running'
+    ? 'cancelled'
+    : toolCall.status === 'error'
+      ? 'error'
+      : toolCall.status === 'cancelled'
+        ? 'cancelled'
+        : 'success';
+  return {
+    id: toolCall.id,
+    toolName: toolCall.toolName,
+    args: toolCall.args,
+    startedAt: toolCall.startedAt,
+    completedAt: toolCall.completedAt,
+    status,
+    result: toolCall.result,
+    error: toolCall.error,
+  };
+}
 
 // ---------------------------------------------------------------------------
 // Agent event reducer: the kernel is the source of truth; the atoms below are
@@ -121,16 +146,7 @@ export const applyAgentEventAtom = atom(
         role: 'assistant',
         content: event.payload.answer,
         timestamp: event.timestamp,
-        toolCalls: event.payload.toolCalls.map((toolCall) => ({
-          id: toolCall.id,
-          toolName: toolCall.toolName,
-          args: toolCall.args,
-          startedAt: toolCall.startedAt,
-          completedAt: toolCall.completedAt,
-          status: toolCall.status === 'error' ? 'error' : 'success',
-          result: toolCall.result,
-          error: toolCall.error,
-        })),
+        toolCalls: event.payload.toolCalls.map((toolCall) => toRecord(toolCall, false)),
       };
       set(messages, [...get(messages), assistantMessage]);
       set(sessionsAtom, (sessions) => sessions.map((session) =>
@@ -181,16 +197,7 @@ export const applyAgentEventAtom = atom(
           ? (run.answer || '(run stopped)')
           : `Error: ${error.message}`,
         timestamp: event.timestamp,
-        toolCalls: run.toolCalls.map((toolCall) => ({
-          id: toolCall.id,
-          toolName: toolCall.toolName,
-          args: toolCall.args,
-          startedAt: toolCall.startedAt,
-          completedAt: toolCall.completedAt,
-          status: toolCall.status === 'error' ? 'error' : 'success',
-          result: toolCall.result,
-          error: toolCall.error,
-        })),
+        toolCalls: run.toolCalls.map((toolCall) => toRecord(toolCall, cancelled)),
       };
       set(messages, [...get(messages), assistantMessage]);
       set(sessionsAtom, (sessions) => sessions.map((session) =>

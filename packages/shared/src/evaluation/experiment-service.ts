@@ -115,7 +115,7 @@ function toToolCallRecord(toolCall: ToolCall): ToolCallRecord {
     args: toolCall.args,
     startedAt: toolCall.startedAt,
     completedAt: toolCall.completedAt,
-    status: toolCall.status === 'error' ? 'error' : 'success',
+    status: toolCall.status === 'error' ? 'error' : toolCall.status === 'cancelled' ? 'cancelled' : 'success',
     result: toolCall.result,
     error: toolCall.error,
   };

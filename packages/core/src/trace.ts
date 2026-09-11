@@ -40,7 +40,7 @@ export type TraceElementSource =
 export interface TraceToolExecution {
   id: string;
   toolName: string;
-  status: 'success' | 'error' | 'running';
+  status: 'success' | 'error' | 'running' | 'cancelled';
   startedAt: number;
   completedAt?: number;
   durationMs?: number;

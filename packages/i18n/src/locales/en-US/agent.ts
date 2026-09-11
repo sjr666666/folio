@@ -48,7 +48,16 @@ export const agent = {
     running: 'Working with market data',
     analyzedSources_one: 'Analyzed {{count}} source',
     analyzedSources_other: 'Analyzed {{count}} sources',
+    // #33: Tool Activity timeline
+    activityLabel: 'Tool activity',
+    summaryWithIssues_one: '{{count}} tool with issues',
+    summaryWithIssues_other: '{{count}} tools with issues',
     statusRunning: 'running',
+    statusCancelled: 'cancelled',
+    retried: 'retried',
+    resultSummary: 'Result',
+    argsSummary: 'Args',
+    errorSummary: 'Error',
     label: 'Tool: {{name}}',
     calls: 'Tool calls',
     names: {

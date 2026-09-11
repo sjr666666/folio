@@ -7,6 +7,9 @@ export type { SupportedLocale, LocalePreference } from './locale.ts';
 // Stream Event Protocol v1 (issue #27, docs/adr/0001-stream-event-protocol.md)
 export * from './stream-events.ts';
 
+// Tool Activity 安全视图模型 (issue #33, docs/adr/0002-tool-activity-timeline.md)
+export * from './tool-activity.ts';
+
 export interface Quote {
   symbol: string;
   lastPrice: number;
@@ -162,7 +165,7 @@ export interface ToolCall {
   args: Record<string, unknown>;
   startedAt: number;
   completedAt?: number;
-  status: 'running' | 'success' | 'error';
+  status: 'running' | 'success' | 'error' | 'cancelled';
   result?: unknown;
   error?: ApiError;
 }
@@ -352,7 +355,7 @@ export interface ToolCallRecord {
   args: Record<string, unknown>;
   startedAt: number;
   completedAt?: number;
-  status: 'success' | 'error';
+  status: 'success' | 'error' | 'cancelled';
   error?: ApiError;
   result?: unknown;
   trace?: AgentTraceEvent[];

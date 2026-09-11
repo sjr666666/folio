@@ -72,7 +72,7 @@ function recordedTraceEvents(messages: Message[]): AgentTraceEvent[] {
 }
 
 function toolExecFromCall(
-  call: { id: string; toolName: string; args?: Record<string, unknown>; startedAt: number; completedAt?: number; status: 'success' | 'error' | 'running'; result?: unknown; error?: { message: string } },
+  call: { id: string; toolName: string; args?: Record<string, unknown>; startedAt: number; completedAt?: number; status: 'success' | 'error' | 'running' | 'cancelled'; result?: unknown; error?: { message: string } },
   source: TraceElementSource
 ): TraceToolExecution {
   const durationMs =
