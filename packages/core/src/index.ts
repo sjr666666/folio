@@ -4,6 +4,9 @@ import type { SupportedLocale } from './locale.ts';
 
 export type { SupportedLocale, LocalePreference } from './locale.ts';
 
+// Stream Event Protocol v1 (issue #27, docs/adr/0001-stream-event-protocol.md)
+export * from './stream-events.ts';
+
 export interface Quote {
   symbol: string;
   lastPrice: number;
